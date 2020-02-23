@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hello React</title>
+    <style type="text/css">
+        .red {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<div id="root"></div>
+<div><a href="https://www.baidu.com" onclick="console.log('The link was clicked.'); return false">
+    <!--to prevent default action use return false-->
+    Click me
+</a></div>
+<div id="prevent-default"></div>
+<div id="greeting"></div>
+<div id="and-expression"></div>
+</body>
+<script src="https://cdn.staticfile.org/react/16.4.0/umd/react.development.js"></script><!--core api-->
+<script src="https://cdn.staticfile.org/react-dom/16.4.0/umd/react-dom.development.js"></script> <!--dom relevant api-->
+<script src="https://cdn.staticfile.org/babel-standalone/6.26.0/babel.min.js"></script> <!--transform es6 to es5-->
+<!--<script src="./js/component-demo.js"></script>-->
+<script type="text/babel">
+
+
+    var count = 0;
+
+    class Clock extends React.Component {
+        constructor(props) {
+            super(props);
+            this.state = {number: count};
+        }
+
+        tick() {
+            this.setState(function (state) {
+                state.number = count++;
+                if (count === 100) {
+                    clearInterval(this.timeId);
+                    count = 0;
+                }
+                return state;
+            }); // parent method
+        }
+
+        // parent method
+        componentDidMount() {
+            this.timeId = setInterval(() => this.tick(), 50);
+        }
+
+        // parent method
+        componentWillUnmount() {
+            clearInterval(this.timeId);
+        }
+
+        // parent method
+        render() {
+
+            return (
+                <div>
+                    count: {this.state.number.toLocaleString()}
+                </div>
+            );
+        }
+    }
+
+    ReactDOM.render(<div>
+        <Clock/><Clock/><Clock/>
+    </div>, document.getElementById('root'));
+
+
+    class ActionClick extends React.Component {
+        handleClick = function (e) {
+            e.preventDefault();
+            console.log('The link was clicked.');
+            return false; // this will not work in react
+        };
+
+        render() {
+            return (
+                <div><a href="https://www.baidu.com" onClick={this.handleClick}>
+                    Click me
+                </a></div>
+            );
+        }
+    }
+
+    ReactDOM.render(<div><ActionClick/></div>, document.getElementById("prevent-default"));
+
+    var isLogin = false;
+
+    class Greeting extends React.Component {
+        constructor(props, context) {
+            super(props, context);
+            this.state = {loginState: isLogin, words: 'Please login first.'};
+        }
+
+        changeState() {
+            this.setState(function (state) {
+                isLogin = !isLogin;
+                if (isLogin) {
+                    state = {loginState: isLogin, words: 'Welcome back!'}
+                } else {
+                    state = {loginState: isLogin, words: 'Please login first.'};
+                }
+                return state;
+            });
+        }
+
+
+        render() {
+            return (
+                <div>
+                    <h1>{this.state.words}</h1>
+                    <p>
+                        <button onClick={() => {
+                            this.changeState()
+                        }}>Change State
+                        </button>
+                    </p>
+                </div>);
+        }
+    }
+
+
+    ReactDOM.render(<Greeting/>, document.getElementById("greeting"));
+
+
+
+</script>
+</html>

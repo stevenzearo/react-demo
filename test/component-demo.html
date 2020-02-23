@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hello React</title>
+    <style type="text/css">
+        .red {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<div id="example"></div>
+<div id="root"></div>
+</body>
+<script src="https://cdn.staticfile.org/react/16.4.0/umd/react.development.js"></script><!--core api-->
+<script src="https://cdn.staticfile.org/react-dom/16.4.0/umd/react-dom.development.js"></script> <!--dom relevant api-->
+<script src="https://cdn.staticfile.org/babel-standalone/6.26.0/babel.min.js"></script> <!--transform es6 to es5-->
+<!--<script src="./js/component-demo.js"></script>-->
+<script type="text/babel">
+    function Hello(props) {
+        return <h1>Hello, {props.name}!</h1>;
+    }
+
+    function Welcome1(props) {
+        return Hello(props);
+    }
+
+    class Welcome2 extends React.Component {
+        render() {
+            return Hello(this.props);
+        }
+    }
+
+    class App extends React.Component {
+        render() {
+            return <div><Welcome1 name="steve"/><Welcome2 name="howard"/></div>;
+        }
+    }
+
+    ReactDOM.render(<App/>, document.getElementById("example"));
+
+    // extract component
+    const steve = {
+        name: "steve",
+        courses: [{
+            name: "math",
+            score: 86
+        }]
+    };
+    const howard = {
+        name: "howard",
+        courses: [{
+            name: "history",
+            score: 84
+        }]
+    };
+
+    class CourseScore extends React.Component {
+        render() {
+            return (
+            <tr>
+                <td>name: {this.props.student.name}</td>
+                <td>course: {this.props.student.courses[0].name}</td>
+                <td>score: {this.props.student.courses[0].score}</td>
+            </tr>
+
+        );
+        }
+    }
+
+    class Student extends React.Component {
+        render() {
+            return (
+                <CourseScore student={this.props.student}/>);
+        }
+    }
+
+    class Class1 extends React.Component {
+        render() {
+            var student1 = <Student key = {steve.name} student={steve}/>;
+            var student2 = <Student key = {howard.name} student={howard}/>;
+            var students = [student1, student2];
+            students = students.map(function(student, i) {return <tr key = {i}><td>{student}</td></tr>});
+            return (
+                <div className="class-student">
+                    <table><tr><th colSpan="3">Student Score Info</th></tr>{students}</table>
+                </div>
+            );
+        }
+    }
+
+    class MyFunction {
+        aFunction: 'logistic-object';
+        input: ['param1', 'param2', '...'];
+        output: 'ouput-object';
+    }
+
+    ReactDOM.render(<Class1/>, document.getElementById('root'));
+</script>
+</html>

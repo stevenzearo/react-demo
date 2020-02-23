@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hello React</title>
+    <style type="text/css">
+        .red {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<div id="root"></div>
+<div><a href="https://www.baidu.com" onclick="console.log('The link was clicked.'); return false">
+    <!--to prevent default action use return false-->
+    Click me
+</a></div>
+<div id="single-select"></div>
+<div id="multi-select"></div>
+<div id="children-demo"></div>
+</body>
+<script src="https://cdn.staticfile.org/react/16.4.0/umd/react.development.js"></script><!--core api-->
+<script src="https://cdn.staticfile.org/react-dom/16.4.0/umd/react-dom.development.js"></script> <!--dom relevant api-->
+<script src="https://cdn.staticfile.org/babel-standalone/6.26.0/babel.min.js"></script> <!--transform es6 to es5-->
+<!--<script src="./js/component-demo.js"></script>-->
+</html>
+
+<script type="text/babel">
+
+
+    class Fruit extends React.Component {
+        constructor(props) {
+            super(props);
+            this.state = {submit: false, value: 'apple'};
+            this.addFruit = this.addFruit.bind(this);
+            this.submit = this.submit.bind(this);
+        }
+
+        addFruit = function (event) {
+            this.setState(Fruit.changeState(this.state, event));
+        };
+
+        static changeState = function (state, event) {
+            var value = event.target.value;
+            state = {submit: state.submit, value: value};
+            alert(value);
+            return state;
+        };
+
+        submit = function () {
+            this.setState(function (state) {
+                state = {submit: true, value: state.value};
+                return state;
+            });
+        };
+
+        render() {
+            return (
+                <div><label>
+                    选择几种水果：
+                    <select value={this.state.value} onChange={this.addFruit}>
+                        <option value="apple">Apple</option>
+                        <option value="banana">Banana</option>
+                        <option value="orange">Orange</option>
+                        <option value="peach">Peach</option>
+                    </select>
+                </label>
+                </div>
+
+            );
+        }
+    }
+
+    ReactDOM.render(<Fruit/>, document.getElementById("single-select"));
+
+    class BulkFruit extends React.Component {
+        constructor(props) {
+            super(props);
+            this.state = {checked: false};
+            this.addFruit = this.addFruit.bind(this);
+            this.submit = this.submit.bind(this);
+        }
+
+        static changeState = function (state, value) {
+            alert(value);
+            state = {checked: !state.checked};
+            return state;
+        };
+
+        addFruit = function () {
+            this.setState(BulkFruit.changeState(this.state, this.props.value));
+        };
+
+        submit = function () {
+            this.setState(function (state) {
+                state = {submit: true, value: state.value};
+                return state;
+            });
+        };
+
+        render() {
+            return (
+                <label>
+                    <input type="checkbox" name="bulk-fruit" onChange={this.addFruit}
+                           defaultChecked={this.state.checked}/>
+                    {this.props.value}
+                </label>
+            );
+        }
+    }
+
+    ReactDOM.render(<label>
+        <BulkFruit value={'apple'}/>
+        <BulkFruit value={'banana'}/>
+        <BulkFruit value={'orange'}/>
+    </label>, document.getElementById("multi-select"));
+
+
+    class ChildrenDemo extends React.Component {
+        render() {
+            return (
+                <div>
+                    {this.props.children}
+                </div>
+            );
+        }
+
+    }
+
+    class Child extends React.Component {
+        render() {
+            return (
+                <p>{this.props.value}</p>
+            );
+        }
+    }
+
+    ReactDOM.render(<ChildrenDemo><Child value={"hello"}/><Child
+        value={"world"}/></ChildrenDemo>, document.getElementById("children-demo"));
+</script>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hello React</title>
+    <style type="text/css">
+        .red {
+            color: red;
+        }
+
+        .unstocked {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div id="root"></div>
+</body>
+<script src="https://cdn.staticfile.org/react/16.4.0/umd/react.development.js"></script><!--core api-->
+<script src="https://cdn.staticfile.org/react-dom/16.4.0/umd/react-dom.development.js"></script> <!--dom relevant api-->
+<script src="https://cdn.staticfile.org/babel-standalone/6.26.0/babel.min.js"></script> <!--transform es6 to es5-->
+<script src="./js/jquery-3.4.1.js"></script>
+<script type="text/babel">
+
+    class Product extends React.Component {
+        constructor(props) {
+            super(props);
+            this.name = props.name;
+            this.price = props.price;
+            this.stocked = props.stocked;
+        }
+
+        render() {
+            var unstocked = "stocked";
+            if (!this.stocked) {
+                unstocked = "unstocked";
+            }
+
+            return (<tr>
+                <td className={unstocked}>{this.name}</td>
+                <td>{this.price}</td>
+            </tr>);
+        }
+    }
+
+    class Category extends React.Component {
+        constructor(props) {
+            super(props);
+            this.category = props.category;
+        }
+
+        render() {
+            return (
+                <div>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>{this.category}</th>
+                        </tr>
+                        </thead>
+                        <tbody>{this.props.children}</tbody>
+                    </table>
+                </div>
+            );
+        }
+    }
+
+    class ListHead extends React.Component {
+        render() {
+            return (
+                <div>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Price</th>
+                        </tr>
+                        </thead>
+
+                    </table>
+                </div>
+            );
+        }
+    }
+
+    class CategoryList extends React.Component {
+        constructor(props) {
+            super(props);
+            this.categoryList = props.categoryList;
+        }
+
+        render() {
+            const categories = this.categoryList.map(function (element) {
+                const productList = element.map(function (product) {
+                    return <Product key={product.name} name={product.name} price={product.price} stocked={product.stocked}/>
+                });
+                return <Category key={element[0].category} category={element[0].category}>{productList}</Category>;
+            });
+            return (
+                <div>
+                    <ListHead/>
+                    {categories}
+                </div>
+            );
+        }
+    }
+
+
+    const data = [
+        {category: "Sporting Goods", price: "$49.99", stocked: true, name: "Football"},
+        {category: "Sporting Goods", price: "$9.99", stocked: true, name: "Baseball"},
+        {category: "Sporting Goods", price: "$29.99", stocked: false, name: "Basketball"},
+        {category: "Electronics", price: "$99.99", stocked: true, name: "iPod Touch"},
+        {category: "Electronics", price: "$399.99", stocked: false, name: "iPhone 5"},
+        {category: "Electronics", price: "$199.99", stocked: true, name: "Nexus 7"}
+    ];
+
+    var categoryNameSet = new Set();
+
+    data.forEach(function (element, index) {
+        categoryNameSet.add(element.category)
+    });
+
+    var newDate = [];
+
+    categoryNameSet.forEach(function (element) {
+        var productList = [];
+        data.forEach(function (e) {
+            if (e.category === (element)) {
+                productList[productList.length] = e;
+            }
+        });
+        newDate[newDate.length] = productList;
+    });
+
+    class SearchPart extends React.Component {
+        constructor(props) {
+            super(props);
+            this.state = {keyword: "", onlyStock: true};
+            this.changeOnlyStock = this.changeOnlyStock.bind(this);
+            this.changeKeyword = this.changeKeyword.bind(this);
+        }
+
+
+        changeOnlyStock = function () {
+            this.setState({keyword: this.state.keyword, onlyStock: !this.state.onlyStock});
+            alert(this.state.onlyStock);
+        };
+
+        changeKeyword = function (event) {
+            this.setState({keyword: event.target.keyword, onlyStock: this.state.onlyStock});
+            alert($(".unstocked").parent.length);
+        };
+        render() {
+            return (
+                <div>
+                    <div>
+                        <label>
+                            <input type="text" onBlur={this.changeKeyword} placeholder="Search..."/>
+                        </label>
+                    </div>
+                    <div>
+                        <label>
+                            <input type="checkbox" onChange={this.changeOnlyStock} defaultChecked={false}/>
+                            Only show product in stock
+                        </label>
+                    </div>
+
+                </div>
+            );
+        }
+    }
+    ReactDOM.render(<div>
+        <SearchPart/>
+        <CategoryList categoryList={newDate}/>
+    </div>, document.getElementById("root"));
+
+
+</script>
+</html>

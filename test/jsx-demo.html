@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hello React</title>
+    <style type="text/css">
+        .red {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<div id="example"></div>
+<div id="root"></div>
+</body>
+<script src="https://cdn.staticfile.org/react/16.4.0/umd/react.development.js"></script><!--core api-->
+<script src="https://cdn.staticfile.org/react-dom/16.4.0/umd/react-dom.development.js"></script> <!--dom relevant api-->
+<script src="https://cdn.staticfile.org/babel-standalone/6.26.0/babel.min.js"></script> <!--transform es6 to es5-->
+<!--<script src="./js/component-demo.js"></script>-->
+<script type="text/babel">
+    function formateUser(user) {
+        return user.firstName + " " + user.lastName;
+    }
+
+    const user = {
+        firstName: "Steve",
+        lastName: "Zou"
+    };
+    const element = (<h1 id="header">Hello, {formateUser(user)}!</h1>);
+    ReactDOM.render(element, document.getElementById("example"));
+
+    var state = 1;
+    let interval = setInterval(tick, 500);
+
+    function tick() {
+        ReactDOM.render(<h2>count: {state}</h2>, document.getElementById("root"));
+        if (state === 100) {
+            clearInterval(interval)
+        }
+        state++;
+    }
+
+
+</script>
+</html>
